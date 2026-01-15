@@ -229,14 +229,10 @@ const MainLayout: React.FC<{
               }}
             />
           </Modal>
-          <div className="flex row items-center">
-            <img style={{ height: "40px" }} src="/assets/logo.png" alt="ScriptCat" />
-            <Typography.Title heading={4} className="!m-0">
-              {"ScriptCat"}
-            </Typography.Title>
-          </div>
+          <div></div>
+
           <Space size="small" className="action-tools">
-            {pageName === "options" && (
+            {(pageName === "options" || pageName === "sidepanel") && (
               <Dropdown
                 droplist={
                   <Menu style={{ maxHeight: "100%", width: "calc(100% + 10px)" }}>

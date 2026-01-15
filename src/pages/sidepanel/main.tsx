@@ -27,7 +27,7 @@ loggerCore.logger().debug("sidepanel page start");
 
 const Root = (
     <AppProvider>
-        <MainLayout className="!flex-row" pageName="sidepanel">
+        <MainLayout className="!flex-row-reverse" pageName="sidepanel">
             <Sider />
         </MainLayout>
     </AppProvider>
