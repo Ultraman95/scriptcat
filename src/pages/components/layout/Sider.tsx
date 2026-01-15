@@ -16,6 +16,8 @@ import {
   IconSettings,
   IconSubscribe,
   IconTool,
+  IconMessage,
+  IconRobot,
 } from "@arco-design/web-react/icon";
 import React, { useRef, useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
@@ -52,9 +54,19 @@ const Sider: React.FC = () => {
       <Layout.Sider className="h-full" collapsed={collapsed} width={170}>
         <div className="flex flex-col justify-between h-full">
           <Menu style={{ width: "100%" }} selectedKeys={[menuSelect]} selectable onClickMenuItem={handleMenuClick}>
+            <CustomLink to="/chat">
+              <MenuItem key="/chat">
+                <IconMessage /> {"Chat"}
+              </MenuItem>
+            </CustomLink>
             <CustomLink to="/">
               <MenuItem key="/" className="menu-script">
                 <IconCode /> {"脚本管理"}
+              </MenuItem>
+            </CustomLink>
+            <CustomLink to="/models">
+              <MenuItem key="/models">
+                <IconRobot /> {"模型管理"}
               </MenuItem>
             </CustomLink>
             {/* <CustomLink to="/subscribe">
@@ -176,6 +188,8 @@ const Sider: React.FC = () => {
           <Route path="/logger" element={<Logger />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/setting" element={<Setting />} />
+          <Route path="/chat" element={<div className="p-4">Chat Page (Under Construction)</div>} />
+          <Route path="/models" element={<div className="p-4">Model Management Page (Under Construction)</div>} />
         </Routes>
       </Layout.Content>
     </HashRouter>
