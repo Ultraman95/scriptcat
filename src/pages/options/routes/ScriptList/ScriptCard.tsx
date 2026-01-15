@@ -81,9 +81,9 @@ export const ScriptCardItem = React.memo(
       const fav2 = !fav1
         ? []
         : fav1
-            .slice()
-            .sort((a, b) => (a.icon && !b.icon ? -1 : !a.icon && b.icon ? 1 : a.match.localeCompare(b.match)))
-            .slice(0, 8);
+          .slice()
+          .sort((a, b) => (a.icon && !b.icon ? -1 : !a.icon && b.icon ? 1 : a.match.localeCompare(b.match)))
+          .slice(0, 8);
       return {
         trimmed: fav2,
         originalLen: fav1?.length ?? 0,
@@ -362,18 +362,18 @@ export const ScriptCard = ({
     () =>
       guideMode && scriptList.length === 0
         ? [
-            {
-              uuid: "demo-uuid-1234",
-              name: "Demo Script",
-              namespace: "demo",
-              sort: 0,
-              createtime: Date.now(),
-              checktime: Date.now(),
-              metadata: {},
-              type: SCRIPT_TYPE_NORMAL,
-              favorite: [{ match: "Example", icon: "", website: "https://example.com" }],
-            } as ScriptLoading,
-          ]
+          {
+            uuid: "demo-uuid-1234",
+            name: "Demo Script",
+            namespace: "demo",
+            sort: 0,
+            createtime: Date.now(),
+            checktime: Date.now(),
+            metadata: {},
+            type: SCRIPT_TYPE_NORMAL,
+            favorite: [{ match: "Example", icon: "", website: "https://example.com" }],
+          } as ScriptLoading,
+        ]
         : scriptList,
     [guideMode, scriptList]
   );
@@ -435,7 +435,7 @@ export const ScriptCard = ({
                 }}
               />
             </Tooltip>
-            <Tooltip content={t("switch_to_table_mode")}>
+            {/* <Tooltip content={t("switch_to_table_mode")}>
               <Button
                 icon={<FaThList />}
                 type="text"
@@ -448,7 +448,7 @@ export const ScriptCard = ({
                   localStorage.setItem("script-list-view-mode", "table");
                 }}
               />
-            </Tooltip>
+            </Tooltip> */}
           </Space>
         </div>
       </Card>

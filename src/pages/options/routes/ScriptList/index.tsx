@@ -38,14 +38,8 @@ function ScriptList() {
 
   const openUserConfig = useSearchParams()[0].get("userConfig") || "";
   const [viewMode, setViewMode] = useState<"table" | "card">(() => {
-    // 根据屏幕宽度选择默认视图模式
-    const viewMode = localStorage.getItem("script-list-view-mode");
-    if (viewMode === "table" || viewMode === "card") {
-      return viewMode;
-    }
-    const width = window.screen.width;
-    if (width < 1280) return "card";
-    return "table";
+    // 默认使用卡片模式
+    return "card";
   });
 
   // 设置列和判断是否打开用户配置

@@ -194,9 +194,9 @@ const ApplyToRunStatusCell = React.memo(({ item, navigate, t }: { item: ListType
     const fav2 = !fav1
       ? []
       : fav1
-          .slice()
-          .sort((a, b) => (a.icon && !b.icon ? -1 : !a.icon && b.icon ? 1 : a.match.localeCompare(b.match)))
-          .slice(0, 4);
+        .slice()
+        .sort((a, b) => (a.icon && !b.icon ? -1 : !a.icon && b.icon ? 1 : a.match.localeCompare(b.match)))
+        .slice(0, 4);
     return {
       trimmed: fav2,
       originalLen: fav1?.length ?? 0,
@@ -580,7 +580,7 @@ export const ScriptTable = ({
                     }}
                   />
                 </Tooltip>
-                <Tooltip content={t("switch_to_card_mode")}>
+                {/* <Tooltip content={t("switch_to_card_mode")}>
                   <Button
                     icon={<FaThLarge />}
                     iconOnly
@@ -594,7 +594,7 @@ export const ScriptTable = ({
                       setViewMode("card");
                     }}
                   />
-                </Tooltip>
+                </Tooltip> */}
               </Space>
             </div>
           ),
