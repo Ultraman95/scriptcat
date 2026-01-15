@@ -117,33 +117,33 @@ const emptyScript = async (template: string, hotKeys: any, target?: string) => {
       const [url, icon] =
         target === "initial"
           ? await new Promise<string[]>((resolve) => {
-              chrome.storage.local.get(["activeTabUrl"], (result) => {
-                const lastError = chrome.runtime.lastError;
-                let retUrl = "https://*/*";
-                let retIcon = "";
-                if (lastError) {
-                  console.error("chrome.runtime.lastError in chrome.storage.local.get:", lastError);
-                  chrome.storage.local.remove(["activeTabUrl"]);
-                } else {
-                  chrome.storage.local.remove(["activeTabUrl"]);
-                  const pageUrl = result?.activeTabUrl?.url;
-                  if (pageUrl) {
-                    try {
-                      const { protocol, pathname, hostname } = new URL(pageUrl);
-                      if (protocol && pathname && hostname) {
-                        retUrl = `${protocol}//${hostname}${pathname}`;
-                        if (protocol === "http:" || protocol === "https:") {
-                          retIcon = `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`;
-                        }
+            chrome.storage.local.get(["activeTabUrl"], (result) => {
+              const lastError = chrome.runtime.lastError;
+              let retUrl = "https://*/*";
+              let retIcon = "";
+              if (lastError) {
+                console.error("chrome.runtime.lastError in chrome.storage.local.get:", lastError);
+                chrome.storage.local.remove(["activeTabUrl"]);
+              } else {
+                chrome.storage.local.remove(["activeTabUrl"]);
+                const pageUrl = result?.activeTabUrl?.url;
+                if (pageUrl) {
+                  try {
+                    const { protocol, pathname, hostname } = new URL(pageUrl);
+                    if (protocol && pathname && hostname) {
+                      retUrl = `${protocol}//${hostname}${pathname}`;
+                      if (protocol === "http:" || protocol === "https:") {
+                        retIcon = `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`;
                       }
-                    } catch {
-                      // do nothing
                     }
+                  } catch {
+                    // do nothing
                   }
                 }
-                resolve([retUrl, retIcon]);
-              });
-            })
+              }
+              resolve([retUrl, retIcon]);
+            });
+          })
           : ["https://*/*", ""];
       code = lazyScriptName(code);
       if (icon) {
@@ -262,9 +262,9 @@ function ScriptEditor() {
                 prev.map((script: Script) =>
                   script.uuid === uuid
                     ? {
-                        ...script,
-                        name,
-                      }
+                      ...script,
+                      name,
+                    }
                     : script
                 )
               );
@@ -276,14 +276,14 @@ function ScriptEditor() {
               prev.map((item) =>
                 item.script.uuid === uuid
                   ? {
-                      ...item,
-                      code: code,
-                      isChanged: false,
-                      script: {
-                        ...item.script,
-                        name,
-                      },
-                    }
+                    ...item,
+                    code: code,
+                    isChanged: false,
+                    script: {
+                      ...item.script,
+                      name,
+                    },
+                  }
                   : item
               )
             );
@@ -503,13 +503,13 @@ function ScriptEditor() {
                 return prev.map((item) =>
                   item.script.uuid === uuid
                     ? {
-                        ...item,
-                        active: true,
-                      }
+                      ...item,
+                      active: true,
+                    }
                     : {
-                        ...item,
-                        active: false,
-                      }
+                      ...item,
+                      active: false,
+                    }
                 );
               } else {
                 const newEditor = {
@@ -598,13 +598,13 @@ function ScriptEditor() {
                 return prev.map((item) =>
                   item.script.uuid === prevTabUUID
                     ? {
-                        ...item,
-                        active: true,
-                      }
+                      ...item,
+                      active: true,
+                    }
                     : {
-                        ...item,
-                        active: false,
-                      }
+                      ...item,
+                      active: false,
+                    }
                 );
               }
             } else {
@@ -657,14 +657,14 @@ function ScriptEditor() {
       }
 
       // 如果只剩一个编辑器，打开空白脚本
-      if (prev.length === 1) {
-        const template = pageUrlSearchParams.get("template") || "";
-        emptyScript(template || "", hotKeys, "blank").then((e) => {
-          setEditors([e]);
-          setSelectSciptButtonAndTab(e.script.uuid);
-        });
-        return prev;
-      }
+      // if (prev.length === 1) {
+      //   const template = pageUrlSearchParams.get("template") || "";
+      //   emptyScript(template || "", hotKeys, "blank").then((e) => {
+      //     setEditors([e]);
+      //     setSelectSciptButtonAndTab(e.script.uuid);
+      //   });
+      //   return prev;
+      // }
 
       // 删除目标编辑器
       prev = prev.filter((_, index) => index !== targetIndex);
@@ -1029,15 +1029,15 @@ function ScriptEditor() {
                 prev.map((editor, i) =>
                   `${i}` === index
                     ? {
-                        ...editor,
-                        active:
-                          (setSelectSciptButtonAndTab(editor.script.uuid), // 需要用 microTask 推遲嗎？
+                      ...editor,
+                      active:
+                        (setSelectSciptButtonAndTab(editor.script.uuid), // 需要用 microTask 推遲嗎？
                           true),
-                      }
+                    }
                     : {
-                        ...editor,
-                        active: false,
-                      }
+                      ...editor,
+                      active: false,
+                    }
                 )
               );
             }}
@@ -1130,11 +1130,11 @@ function ScriptEditor() {
                         prev.map((v) =>
                           v.script.uuid === item.script.uuid
                             ? {
-                                ...v,
-                                editor:
-                                  (v.active && setTimeout(() => e.focus(), 100), // 编辑器实例创建后立即聚焦一次
+                              ...v,
+                              editor:
+                                (v.active && setTimeout(() => e.focus(), 100), // 编辑器实例创建后立即聚焦一次
                                   e),
-                              }
+                            }
                             : v
                         )
                       );
