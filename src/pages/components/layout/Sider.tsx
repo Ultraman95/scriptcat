@@ -54,10 +54,10 @@ const Sider: React.FC = () => {
           <Menu style={{ width: "100%" }} selectedKeys={[menuSelect]} selectable onClickMenuItem={handleMenuClick}>
             <CustomLink to="/">
               <MenuItem key="/" className="menu-script">
-                <IconCode /> {t("installed_scripts")}
+                <IconCode /> {"脚本管理"}
               </MenuItem>
             </CustomLink>
-            <CustomLink to="/subscribe">
+            {/* <CustomLink to="/subscribe">
               <MenuItem key="/subscribe">
                 <IconSubscribe /> {t("subscribe")}
               </MenuItem>
@@ -66,7 +66,7 @@ const Sider: React.FC = () => {
               <MenuItem key="/logger">
                 <IconFile /> {t("logs")}
               </MenuItem>
-            </CustomLink>
+            </CustomLink> */}
             <CustomLink to="/tools" className="menu-tools">
               <MenuItem key="/tools">
                 <IconTool /> {t("tools")}
