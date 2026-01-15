@@ -16,7 +16,7 @@
   },
   "incognito": "split",
   "action": {
-    "default_popup": "src/popup.html",
+    "default_title": "__MSG_scriptcat__",
     "default_icon": {
       "128": "assets/logo.png"
     }
@@ -41,8 +41,12 @@
     "notifications",
     "clipboardWrite",
     "unlimitedStorage",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "sidePanel"
   ],
+  "side_panel": {
+    "default_path": "src/sidepanel.html"
+  },
   "optional_permissions": [
     "background",
     "userScripts"

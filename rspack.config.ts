@@ -20,14 +20,14 @@ const assets = `${src}/assets`;
 export default defineConfig({
   ...(isDev
     ? {
-        watch: true,
-        mode: "development",
-        devtool: process.env.NO_MAP === "true" ? false : "inline-source-map",
-      }
+      watch: true,
+      mode: "development",
+      devtool: process.env.NO_MAP === "true" ? false : "inline-source-map",
+    }
     : {
-        mode: "production",
-        devtool: false,
-      }),
+      mode: "production",
+      devtool: false,
+    }),
   context: dirname,
   entry: {
     service_worker: `${src}/service_worker.ts`,
@@ -41,6 +41,7 @@ export default defineConfig({
     confirm: `${src}/pages/confirm/main.tsx`,
     import: `${src}/pages/import/main.tsx`,
     options: `${src}/pages/options/main.tsx`,
+    sidepanel: `${src}/pages/sidepanel/main.tsx`,
     "editor.worker": "monaco-editor/esm/vs/editor/editor.worker.js",
     "ts.worker": "monaco-editor/esm/vs/language/typescript/ts.worker.js",
     "linter.worker": `${src}/linter.worker.ts`,
@@ -190,6 +191,14 @@ export default defineConfig({
       title: "Home - ScriptCat",
       minify: true,
       chunks: ["popup"],
+    }),
+    new rspack.HtmlRspackPlugin({
+      filename: `${dist}/ext/src/sidepanel.html`,
+      template: `${src}/pages/sidepanel.html`,
+      inject: "head",
+      title: "SidePanel - ScriptCat",
+      minify: true,
+      chunks: ["sidepanel"],
     }),
     new rspack.HtmlRspackPlugin({
       filename: `${dist}/ext/src/offscreen.html`,

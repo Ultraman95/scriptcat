@@ -62,6 +62,13 @@ async function setupOffscreenDocument() {
   }
 }
 
+async function setupSidePanel() {
+  if (chrome.sidePanel && chrome.sidePanel.setPanelBehavior) {
+    await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+      .catch((error) => console.error(error));
+  }
+}
+
 function main() {
   cleanInvalidKeys();
   // 初始化管理器
@@ -78,6 +85,7 @@ function main() {
   manager.initManager();
   // 初始化沙盒环境
   setupOffscreenDocument();
+  setupSidePanel();
 }
 
 const apiActions: {
