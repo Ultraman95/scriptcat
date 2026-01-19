@@ -18,6 +18,7 @@ import {
   IconDesktop,
   IconDown,
   IconLanguage,
+  IconLaunch,
   IconLink,
   IconMoonFill,
   IconSunFill,
@@ -232,6 +233,26 @@ const MainLayout: React.FC<{
           <div></div>
 
           <Space size="small" className="action-tools">
+            {pageName === "sidepanel" && (
+              <Button
+                type="text"
+                size="small"
+                icon={<IconLaunch />}
+                style={{
+                  color: "var(--color-text-1)",
+                }}
+                className="!text-lg"
+                title={t("pop_out_window")}
+                onClick={() => {
+                  chrome.windows.create({
+                    url: chrome.runtime.getURL("/src/sidepanel.html"),
+                    type: "popup",
+                    width: 800,
+                    height: 600,
+                  });
+                }}
+              />
+            )}
             {(pageName === "options" || pageName === "sidepanel") && (
               <Dropdown
                 droplist={

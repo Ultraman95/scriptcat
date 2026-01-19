@@ -550,5 +550,6 @@
     "enable_now": "Enable Now",
     "maybe_later": "Maybe Later",
     "settings_hint": "You can change this option in settings at any time."
-  }
+  },
+  "pop_out_window": "Pop Out to Window"
 }
