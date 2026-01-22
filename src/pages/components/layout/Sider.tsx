@@ -4,7 +4,7 @@ import ScriptList from "@App/pages/options/routes/ScriptList";
 import Setting from "@App/pages/options/routes/Setting";
 import SubscribeList from "@App/pages/options/routes/SubscribeList";
 import Tools from "@App/pages/options/routes/Tools";
-import { Layout, Menu } from "@arco-design/web-react";
+import { Layout, Menu, Select, Button, Input, Card, Space, Message } from "@arco-design/web-react";
 import {
   IconCode,
   IconFile,
@@ -19,7 +19,7 @@ import {
   IconMessage,
   IconRobot,
 } from "@arco-design/web-react/icon";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { RiFileCodeLine, RiGuideLine, RiLinkM } from "react-icons/ri";
@@ -27,6 +27,138 @@ import SiderGuide from "./SiderGuide";
 import CustomLink from "../CustomLink";
 import { localePath } from "@App/locales/locales";
 import { DocumentationSite } from "@App/app/const";
+import { message as extMessage } from "@App/pages/store/global";
+import { ValueClient, ScriptClient } from "@App/app/service/service_worker/client";
+import type { Script } from "@App/app/repo/scripts";
+
+// 简单的测试对话框组件，用于测试脚本和sidepanel之间的通信
+const TestChat: React.FC = () => {
+  const [scripts, setScripts] = useState<Script[]>([]);
+  const [selectedUuid, setSelectedUuid] = useState<string>("");
+  const [values, setValues] = useState<Record<string, unknown>>({});
+  const [sendKey, setSendKey] = useState("panel_response");
+  const [sendValue, setSendValue] = useState("");
+
+  const valueClient = new ValueClient(extMessage);
+  const scriptClient = new ScriptClient(extMessage);
+
+  // 加载脚本列表
+  useEffect(() => {
+    scriptClient.getAllScripts().then((list) => {
+      setScripts(list.filter((s) => s.status === 1));
+    });
+  }, []);
+
+  // 读取脚本存储值
+  const loadValues = async () => {
+    const script = scripts.find((s) => s.uuid === selectedUuid);
+    if (!script) return;
+    try {
+      const v = await valueClient.getScriptValue(script);
+      setValues(v);
+      Message.success("加载成功");
+    } catch (e) {
+      Message.error("加载失败: " + e);
+    }
+  };
+
+  // 发送值给脚本
+  const sendToScript = async () => {
+    if (!selectedUuid || !sendKey) {
+      Message.warning("请选择脚本并输入Key");
+      return;
+    }
+    try {
+      let parsed: unknown = sendValue;
+      try { parsed = JSON.parse(sendValue); } catch { /* keep string */ }
+      await valueClient.setScriptValue(selectedUuid, sendKey, parsed);
+      Message.success("发送成功");
+      loadValues();
+    } catch (e) {
+      Message.error("发送失败: " + e);
+    }
+  };
+
+  return (
+    <div className="p-4 h-full overflow-auto">
+      <Card title="测试面板 - 脚本通信测试" style={{ marginBottom: 16 }}>
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Space>
+            <span>选择脚本:</span>
+            <Select
+              style={{ width: 250 }}
+              placeholder="选择一个脚本"
+              onChange={(v) => { setSelectedUuid(v); setValues({}); }}
+              showSearch
+            >
+              {scripts.map((s) => (
+                <Select.Option key={s.uuid} value={s.uuid}>{s.name}</Select.Option>
+              ))}
+            </Select>
+            <Button type="primary" onClick={loadValues} disabled={!selectedUuid}>
+              读取值
+            </Button>
+          </Space>
+        </Space>
+      </Card>
+
+      <Card title="脚本存储值 (GM_getValue)" style={{ marginBottom: 16 }}>
+        <pre style={{
+          maxHeight: 200,
+          overflow: "auto",
+          background: "var(--color-fill-2)",
+          padding: 8,
+          borderRadius: 4,
+          fontSize: 12
+        }}>
+          {Object.keys(values).length === 0
+            ? `暂无数据，请选择脚本并点击"读取值"`
+            : JSON.stringify(values, null, 2)}
+        </pre>
+      </Card>
+
+      <Card title="发送值给脚本 (脚本通过 GM_addValueChangeListener 接收)">
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Space>
+            <span>Key:</span>
+            <Input
+              style={{ width: 200 }}
+              value={sendKey}
+              onChange={setSendKey}
+              placeholder="panel_response"
+            />
+          </Space>
+          <Space>
+            <span>Value:</span>
+            <Input.TextArea
+              style={{ width: 300 }}
+              value={sendValue}
+              onChange={setSendValue}
+              placeholder='输入值，支持JSON如 {"msg":"hello"}'
+              autoSize={{ minRows: 2 }}
+            />
+          </Space>
+          <Button type="primary" onClick={sendToScript} disabled={!selectedUuid}>
+            发送给脚本
+          </Button>
+        </Space>
+      </Card>
+
+      <Card title="使用说明" style={{ marginTop: 16 }}>
+        <p><b>脚本发送数据到面板:</b></p>
+        <pre style={{ background: "var(--color-fill-2)", padding: 8, borderRadius: 4, fontSize: 12 }}>
+          {`GM_setValue("panel_message", { msg: "hello" });`}
+        </pre>
+        <p style={{ marginTop: 8 }}><b>脚本接收面板发送的数据:</b></p>
+        <pre style={{ background: "var(--color-fill-2)", padding: 8, borderRadius: 4, fontSize: 12 }}>
+          {`GM_addValueChangeListener("panel_response", (name, old, val, remote) => {
+  if (remote) console.log("收到:", val);
+});`}
+        </pre>
+      </Card>
+    </div>
+  );
+};
 
 const MenuItem = Menu.Item;
 let { hash } = window.location;
@@ -188,7 +320,7 @@ const Sider: React.FC = () => {
           <Route path="/logger" element={<Logger />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/setting" element={<Setting />} />
-          <Route path="/chat" element={<div className="p-4">Chat Page (Under Construction)</div>} />
+          <Route path="/chat" element={<TestChat />} />
           <Route path="/models" element={<div className="p-4">Model Management Page (Under Construction)</div>} />
         </Routes>
       </Layout.Content>
