@@ -51,7 +51,6 @@ import { getSimilarityScore, ScriptUpdateCheck } from "./script_update_check";
 import { LocalStorageDAO } from "@App/app/repo/localStorage";
 import { CompiledResourceDAO } from "@App/app/repo/resource";
 import { initRegularUpdateCheck } from "./regular_updatecheck";
-// import { gzip as pakoGzip } from "pako";
 
 const cIdKey = `(cid_${Math.random()})`;
 
@@ -413,7 +412,7 @@ export class ScriptService {
       });
   }
 
-  async deleteScript(uuid: string) {
+  async deleteScript(uuid: string, deleteBy?: InstallSource) {
     let logger = this.logger.with({ uuid });
     const script = await this.scriptDAO.get(uuid);
     if (!script) {
@@ -428,7 +427,7 @@ export class ScriptService {
         await this.scriptCodeDAO.delete(uuid);
         await this.compiledResourceDAO.delete(uuid);
         logger.info("delete success");
-        const data = [{ uuid, storageName, type: script.type }] as TDeleteScript[];
+        const data = [{ uuid, storageName, type: script.type, deleteBy }] as TDeleteScript[];
         this.mq.publish("deleteScripts", data);
         return true;
       })

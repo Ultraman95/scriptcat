@@ -74,14 +74,30 @@ export function initLocales(systemConfig: SystemConfig) {
   });
 }
 
-export function i18nName(script: { name: string; metadata: SCMetadata }) {
-  const m = script.metadata[`name:${i18n?.language?.toLowerCase()}`];
+export const i18nLang = (): string => `${i18n?.language?.toLowerCase()}`;
+
+export function i18nName(script: { name: string; metadata: SCMetadata }): string {
+  const metadata = script.metadata;
+  const lang = i18nLang();
+  let m = metadata[`name:${lang}`];
+  if (!m) {
+    // 尝试只用前缀匹配
+    const langPrefix = lang.split("-")[0];
+    m = metadata[`name:${langPrefix}`];
+  }
   return m ? m[0] : script.name;
 }
 
-export function i18nDescription(script: { metadata: SCMetadata }) {
-  const m = script.metadata[`description:${i18n?.language?.toLowerCase()}`];
-  return m ? m[0] : script.metadata.description;
+export function i18nDescription(script: { metadata: SCMetadata }): string {
+  const metadata = script.metadata;
+  const lang = i18nLang();
+  let m = metadata[`description:${lang}`];
+  if (!m) {
+    // 尝试只用前缀匹配
+    const langPrefix = lang.split("-")[0];
+    m = metadata[`description:${langPrefix}`];
+  }
+  return m ? m[0] : metadata.description?.[0] || "";
 }
 
 // 判断是否是中文用户
